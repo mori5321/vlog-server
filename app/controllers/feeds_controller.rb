@@ -1,6 +1,10 @@
 class FeedsController < ApplicationController
   before_action :set_feed, only: [:show, :update, :destroy]
 
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+
+  before_action :authenticate, except: [:index, :show]
+
   # GET /feeds
   def index
     @feeds = Feed.order(id: :desc)
@@ -45,6 +49,15 @@ class FeedsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def feed_params
-      params.fetch(:feed, {}).permit(:text)
+      params.permit(:text)
+    end
+
+    #FIXME: ここのtokenがとれずinvalidなんとかになってしまう。
+    def authenticate
+      authenticate_or_request_with_http_token do |token, options|
+        auth_user = User.find_by(token: token)
+        # auth_user != nil ? true : false
+        return true
+      end
     end
 end
