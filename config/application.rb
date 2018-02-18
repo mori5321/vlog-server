@@ -24,7 +24,8 @@ module VlogServer
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:8080'
+        origins 'http://localhost:8080' if Rails.env == "development"
+        origins 'https://whispering-taiga-20149.herokuapp.com' if Rails.env == "production"
         resource '*', :headers => :any, :methods => [:get, :post, :patch, :delete, :options]
       end
     end
