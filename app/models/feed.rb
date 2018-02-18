@@ -1,5 +1,5 @@
 class Feed < ApplicationRecord
-  before_create :fetch_first_line_as_a_title
+  before_save :fetch_first_line_as_a_title
 
   def formatted_created_at
     created_at.strftime("%Y-%m-%d")
